@@ -26,6 +26,21 @@ pipeline {
             }
         }
 
+        stage('Selenium Browser Tests') {
+            steps {
+                sh '''
+                    set -eu
+
+                    . .venv/bin/activate
+
+                    RUN_SELENIUM=1 \
+                    SELENIUM_REMOTE_URL=http://host.docker.internal:4444 \
+                    APP_URL=http://host.docker.internal:5000 \
+                    python -m pytest -v tests/test_selenium.py
+                '''
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 sh 'docker build -t ${IMAGE_NAME}:${BUILD_NUMBER} .'
