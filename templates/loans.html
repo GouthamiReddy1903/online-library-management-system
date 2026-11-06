@@ -1,0 +1,4 @@
+{% extends "base.html" %}{% block content %}<h1 class="h3 mb-3">My Loans</h1>
+{% if loans %}<div class="table-responsive"><table class="table table-striped align-middle"><thead><tr><th>Book</th><th>Issue date</th><th>Due date</th><th>Return date</th><th>Fine (₹)</th><th>Action</th></tr></thead><tbody>
+{% for loan in loans %}<tr><td>{{ loan.title }}<br><small class="text-muted">{{ loan.author }}</small></td><td>{{ loan.issue_date }}</td><td>{{ loan.due_date }}</td><td>{{ loan.return_date or 'Not returned' }}</td><td>{{ '%.2f'|format(loan.current_fine) }}</td><td>{% if not loan.return_date %}<form method="post" action="{{ url_for('return_book', loan_id=loan.id) }}"><button class="btn btn-sm btn-success">Return</button></form>{% else %}Returned{% endif %}</td></tr>{% endfor %}
+</tbody></table></div>{% else %}<p class="alert alert-info">You have no book loans yet.</p>{% endif %}{% endblock %}

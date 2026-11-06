@@ -1,0 +1,18 @@
+services:
+  library:
+    build: .
+    container_name: online-library
+    ports:
+      - "5000:5000"
+    environment:
+      SECRET_KEY: "replace-this-for-real-deployment"
+      DATABASE_PATH: /app/data/library.db
+      ADMIN_EMAIL: admin@library.com
+      ADMIN_PASSWORD: admin123
+      FINE_PER_DAY: "5"
+      LOAN_DAYS: "14"
+    volumes:
+      - library_data:/app/data
+    restart: unless-stopped
+volumes:
+  library_data:

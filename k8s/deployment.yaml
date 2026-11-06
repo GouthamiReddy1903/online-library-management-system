@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: online-library
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: online-library
+  template:
+    metadata:
+      labels:
+        app: online-library
+    spec:
+      containers:
+        - name: library
+          image: online-library-management:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5000
+          env:
+            - name: DATABASE_PATH
+              value: /app/data/library.db
+            - name: SECRET_KEY
+              value: change-this-secret
+            - name: ADMIN_EMAIL
+              value: admin@library.com
+            - name: ADMIN_PASSWORD
+              value: admin123
+            - name: FINE_PER_DAY
+              value: "5"
+          volumeMounts:
+            - name: library-storage
+              mountPath: /app/data
+      volumes:
+        - name: library-storage
+          persistentVolumeClaim:
+            claimName: library-pvc
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: library-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
